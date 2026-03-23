@@ -1,0 +1,96 @@
+{
+  "content": {
+    "src": "PumaOpsLab.zip",
+    "entry": "LAB_Description"
+  },
+  "lab_config": {
+    "catalog": "puma_ops_lab",
+    "schema": "workshop",
+    "volume": "raw_data",
+    "workspace_path": "/Shared/puma_ops_masterclass"
+  },
+  "participants": ["thomas.hass"],
+  "user_config": {
+    "cluster_config": {
+      "spark_version": "15.4.x-scala2.12",
+      "node_type_id": "i3.xlarge",
+      "num_workers": 1,
+      "runtime_engine": "PHOTON",
+      "custom_tags": {
+        "Workshop": "puma_ops_masterclass"
+      },
+      "cluster_log_conf": {
+        "volumes": {
+          "destination": "/Volumes/puma_ops_lab/workshop/raw_data/cluster_logs"
+        }
+      }
+    },
+    "warehouse": {
+      "name": "PUMA_OPS_SHARED_WAREHOUSE",
+      "cluster_size": "Small",
+      "warehouse_type": "SERVERLESS",
+      "enable_serverless_compute": true,
+      "auto_stop_mins": 30
+    }
+  },
+  "metastore_config": {
+    "default_catalog": "puma_ops_lab",
+    "enable_system_schemas": ["access", "billing", "compute", "lakeflow", "query", "storage"]
+  },
+  "jobs": {
+    "job_00_working_etl": {
+      "notebook": "jobs/job_00_working_etl",
+      "compute": "serverless",
+      "schedule": null
+    },
+    "puma_ops_challenge_01_schema": {
+      "notebook": "jobs/job_01_schema_mismatch",
+      "compute": "serverless",
+      "schedule": null
+    },
+    "puma_ops_challenge_02_permissions": {
+      "tasks": [
+        {"task_key": "extract_orders", "notebook": "jobs/job_02_task_extract"},
+        {"task_key": "enrich_with_segments", "notebook": "jobs/job_02_task_enrich", "depends_on": ["extract_orders"]},
+        {"task_key": "build_report", "notebook": "jobs/job_02_task_report", "depends_on": ["enrich_with_segments"]}
+      ],
+      "compute": "serverless",
+      "schedule": null
+    },
+    "puma_ops_challenge_03_oom": {
+      "notebook": "jobs/job_03_oom_heavy_shuffle",
+      "compute": "job_cluster",
+      "schedule": null
+    },
+    "puma_ops_challenge_04_params": {
+      "notebook": "jobs/job_04_bad_parameters",
+      "compute": "serverless",
+      "parameters": {
+        "region": "APEC",
+        "min_date": "2024-01-01"
+      },
+      "schedule": null
+    },
+    "puma_ops_challenge_05_slow_query": {
+      "notebook": "jobs/job_05_slow_query",
+      "compute": "sql_warehouse",
+      "schedule": null
+    }
+  },
+  "pipelines": {
+    "puma_ops_inventory_pipeline": {
+      "source_notebooks": ["pipelines/pipeline_bronze", "pipelines/pipeline_silver", "pipelines/pipeline_gold"],
+      "target_schema": "workshop",
+      "serverless": true
+    },
+    "puma_ops_inventory_pipeline_broken": {
+      "source_notebooks": ["pipelines/pipeline_broken_bronze", "pipelines/pipeline_silver", "pipelines/pipeline_gold"],
+      "target_schema": "workshop",
+      "serverless": true
+    }
+  },
+  "dashboards": [
+    "dashboards/lakeflow_system_tables_dashboard.lvdash.json",
+    "dashboards/dbsql_warehouse_advisor_v8.lvdash.json"
+  ]
+}

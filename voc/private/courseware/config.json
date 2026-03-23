@@ -1,0 +1,29 @@
+{
+  "content": {
+    "src": "PumaOpsLab.zip",
+    "entry": "day_1_03a_system_tables"
+  },
+  "user_config": {
+    "cluster_config": {
+      "spark_version": "15.4.x-scala2.12",
+      "node_type_id": "i3.xlarge",
+      "num_workers": 8,
+      "runtime_engine": "PHOTON",
+      "custom_tags": {
+        "Workshop": "puma_ops_masterclass"
+      },
+      "cluster_log_conf": {
+        "volumes": {
+          "destination": "/Volumes/puma_ops_lab/workshop/raw_data/cluster_logs"
+        }
+      }
+    },
+    "warehouse": {
+      "name": "PUMA_OPS_SHARED_WAREHOUSE",
+      "cluster_size": "Small",
+      "warehouse_type": "SERVERLESS",
+      "enable_serverless_compute": true,
+      "auto_stop_mins": 30
+    }
+  }
+}

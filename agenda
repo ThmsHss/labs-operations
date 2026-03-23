@@ -1,0 +1,48 @@
+PUMA Databricks Operational Team Upskilling Track
+1. Tracing and Troubleshooting Jobs
+- Understanding Databricks Job Architecture (Tasks, Job Clusters, Notebook Workflows)
+- Tracing a job end-to-end: Run history, logs, Spark UI, cluster logs
+- Monitoring job performance and diagnosing common issues
+- Debugging failures and reviewing job run outputs
+2. Parameterized Notebooks
+- Using widgets for parameterization
+- Passing parameters through Databricks Jobs and REST API
+- Passing parameters through Databricks Jobs and RDBMS sources
+- Designing modular and reusable notebooks
+3. Metadata Tables and Data Governance
+- Databricks System Tables overview
+- Creating custom metadata tables for lineage, run logs, audit trails
+- Unity Catalog governance and auditing
+4. Cluster Types and Optimization
+- All-purpose, Job, and SQL Warehouse cluster differences
+- Serverless compute considerations
+- Autoscaling, cost optimization, and cluster policies
+5. Volumes and Storage Setup
+- Unity Catalog volumes: Managed vs External
+- Reading/writing data using volumes
+- Permissions and best practices for streaming checkpoints
+6. Reading Data from Delta Tables
+- Delta fundamentals and ACID properties
+- Time travel, optimization (ZORDER, VACUUM)
+- Schema evolution and enforcement
+
+7. Views vs Materialized Views
+- Standard views vs precomputed materialized views
+- Performance considerations and refresh strategies
+- Security inheritance in Unity Catalog
+
+8. Databricks AI capabilities (e.g., Databricks Assistant)
+- Use cases in Databricks
+- Prompt Engineering for Data and Analytics Team
+- AI for data engineering support
+- Debugging with AI
+- Integrating conversational AI into support workflows
+
+9. Ingestion Google Analytics Data into Databricks
+- Exporting GA4 data to BigQuery
+- Connecting Databricks to BigQuery
+- Batch vs streaming ingestion
+- Handling nested and repeated GA4 event schemas
+- Working with JSON event parameters
+
+10. AIand Machine Learning on GA Data
