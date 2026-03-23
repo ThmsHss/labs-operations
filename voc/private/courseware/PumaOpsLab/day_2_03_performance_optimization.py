@@ -860,7 +860,7 @@ print("Performance lab table cleaned up")
 # MAGIC ```
 # MAGIC
 # MAGIC ---
-# MAGIC **Next**: [day_2_04_declarative_automation_bundles — Infrastructure-as-code for Databricks]($./day_2_04_declarative_automation_bundles)
+# MAGIC **Next**: [day_2_04_sql_alerts — SQL Alerts Challenge]($./day_2_04_sql_alerts)
 
 # COMMAND ----------
 

@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # Day 1 — 05a: Delta Lake Foundations
+# MAGIC # Day 1 — 04a: Delta Lake Foundations
 # MAGIC **Databricks Operations Masterclass — PUMA**
 # MAGIC
 # MAGIC In this notebook you will:
@@ -321,7 +321,7 @@ ORDER BY status
 
 # MAGIC %md
 # MAGIC ---
-# MAGIC **Next**: [day_1_05b_autoloader_schema_evolution — Auto Loader with schema evolution exercises]($./day_1_05b_autoloader_schema_evolution)
+# MAGIC **Next**: [day_1_04b_autoloader_schema_evolution — Auto Loader with schema evolution exercises]($./day_1_04b_autoloader_schema_evolution)
 
 # COMMAND ----------
 
@@ -331,4 +331,4 @@ ORDER BY status
 
 # COMMAND ----------
 
-mark_notebook_complete("day_1_05a_delta_foundations")
+mark_notebook_complete("day_1_04a_delta_foundations")

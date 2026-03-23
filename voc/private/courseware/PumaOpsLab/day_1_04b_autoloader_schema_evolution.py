@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # Day 1 — 05b: Auto Loader & Schema Evolution
+# MAGIC # Day 1 — 04b: Auto Loader & Schema Evolution
 # MAGIC **Databricks Operations Masterclass — PUMA**
 # MAGIC
 # MAGIC In this notebook you will:
@@ -683,7 +683,7 @@ display(spark.sql(f"SELECT count(*) AS rows_before_reset FROM {target_table}"))
 # MAGIC | Schema location | Stores inferred schema; delete alongside checkpoint for a full reset |
 # MAGIC
 # MAGIC ---
-# MAGIC **End of Block 5**. Next up: Block 6 — Cluster Types, Costs, Autoscaling & Cluster Policies.
+# MAGIC **Next**: [day_1_05a_compute_types_overview — Compute Overview & Quick Wins]($./day_1_05a_compute_types_overview)
 
 # COMMAND ----------
 
@@ -693,4 +693,4 @@ display(spark.sql(f"SELECT count(*) AS rows_before_reset FROM {target_table}"))
 
 # COMMAND ----------
 
-mark_notebook_complete("day_1_05b_autoloader_schema_evolution")
+mark_notebook_complete("day_1_04b_autoloader_schema_evolution")

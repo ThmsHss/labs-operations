@@ -251,6 +251,8 @@ spark.table(f"{FQ}.orders_v2").printSchema()
 # MAGIC - How would your debugging approach differ if a serverless job ran on classic compute, or vice versa?
 # MAGIC
 # MAGIC ---
+# MAGIC **Next**: [day_1_04a_delta_foundations — Delta Lake Foundations]($./day_1_04a_delta_foundations)
+# MAGIC
 # MAGIC **End of Day 1 — Block 3**: Observability hands-on complete. 🎉
 
 # COMMAND ----------

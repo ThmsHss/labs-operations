@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # Day 2 — 04: Declarative Automation Bundles
+# MAGIC # Day 2 — 05: Declarative Automation Bundles
 # MAGIC **Databricks Operations Masterclass — PUMA**
 # MAGIC
 # MAGIC **Duration**: ~30–45 minutes
@@ -516,7 +516,9 @@
 # MAGIC - [Bundle examples on GitHub](https://github.com/databricks/bundle-examples)
 # MAGIC
 # MAGIC ---
-# MAGIC **Previous**: [day_2_03_performance_optimization — Performance tuning & Spark UI]($./day_2_03_performance_optimization)
+# MAGIC **Previous**: [day_2_04_sql_alerts — SQL Alerts Challenge]($./day_2_04_sql_alerts)
+# MAGIC
+# MAGIC **End of Workshop.** 🎉 Thank you for attending the Databricks Operations Masterclass!
 
 # COMMAND ----------
 
@@ -526,4 +528,4 @@
 
 # COMMAND ----------
 
-mark_notebook_complete("day_2_04_declarative_automation_bundles")
+mark_notebook_complete("day_2_05_declarative_automation_bundles")
