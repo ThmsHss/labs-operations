@@ -10,8 +10,8 @@
 # MAGIC |-----------|-------------|---------------|
 # MAGIC | 1 | Schema mismatch | Job output, schema comparison |
 # MAGIC | 2 | Missing SELECT → insufficient permissions, then ambiguous column (multi-task) | Task-level output, GRANT, Repair Run (×2) |
-# MAGIC | 3 | Runaway join (spill / OOM) | Spark UI (Stages, SQL), notebook code |
-# MAGIC | 4 | Bad notebook parameter | Job params, assertion error |
+# MAGIC | 3 | Bad notebook parameter | Job params, assertion error |
+# MAGIC | 4 | Runaway join (runs forever / OOM) | The code itself, Genie |
 # MAGIC
 # MAGIC 💡 **Hints** are available in the `hints/` folder if you get stuck.
 
@@ -31,8 +31,8 @@ JOB_PREFIX = user_prefix
 challenge_jobs = {
     "Challenge 1 — Schema Mismatch":       f"{JOB_PREFIX}_challenge_01_schema",
     "Challenge 2 — Permission Denied":     f"{JOB_PREFIX}_challenge_02_permissions",
-    "Challenge 3 — Runaway Job":           f"{JOB_PREFIX}_challenge_03_oom",
-    "Challenge 4 — Bad Parameters":        f"{JOB_PREFIX}_challenge_04_params",
+    "Challenge 3 — Bad Parameters":        f"{JOB_PREFIX}_challenge_04_params",
+    "Challenge 4 — Runaway Job":           f"{JOB_PREFIX}_challenge_03_oom",
 }
 print(f"Your job prefix: {JOB_PREFIX}")
 print(f"Your job notebooks: /Shared/puma_ops_masterclass/{current_user.split('@')[0].replace('.', '_') if '@' in current_user else current_user}/jobs/\n")
@@ -144,52 +144,7 @@ spark.table(f"{FQ}.orders_v2").printSchema()
 
 # MAGIC %md
 # MAGIC ---
-# MAGIC ## Challenge 3: Runaway Job
-# MAGIC
-# MAGIC **Job**: Your `{JOB_PREFIX}_challenge_03_oom`
-# MAGIC
-# MAGIC **Scenario**: A reporting job runs on a **classic job cluster** and joins orders with customers
-# MAGIC to create a revenue breakdown. The job either **runs forever** or **crashes with OOM**.
-# MAGIC Something about the join is very wrong.
-# MAGIC
-# MAGIC > This job runs on **classic compute**, so you have access to the **Spark UI** — something
-# MAGIC > you don't get on serverless. Even if the job is still running (or has crashed), the Spark UI
-# MAGIC > is available while the cluster is alive. Check the **Stages** tab for spill metrics and the
-# MAGIC > **SQL** tab for the query plan. We will cover **performance optimization** in detail in a
-# MAGIC > later session. For now, focus on **reading the code** and **understanding what the join is doing**.
-# MAGIC
-# MAGIC ### Your task:
-# MAGIC 1. Open the run — is it still running? Did it fail with OOM?
-# MAGIC 2. Open the **Spark UI → SQL tab**: look at the physical plan — what type of join is Spark using?
-# MAGIC    You should see `BroadcastNestedLoopJoin` — this is a **cartesian product**.
-# MAGIC 3. Look at the **job notebook code** (click through from the task run) — how are the two DataFrames joined?
-# MAGIC 4. Do the math: 500K orders × 50K customers = **25 billion rows**. That's why it runs forever / OOMs.
-# MAGIC 5. Fix the join: replace `crossJoin` with `.join(..., "customer_id")`, then re-run
-# MAGIC
-# MAGIC ### Tools to use:
-# MAGIC - **Spark UI → SQL tab** — shows the physical plan with `BroadcastNestedLoopJoin` (the smoking gun)
-# MAGIC - Job run output / error message (OOM if it crashes, or the job just hangs)
-# MAGIC - The job notebook code (click through from the task run)
-# MAGIC
-# MAGIC > **Note**: On a single-node cluster, the Stages tab may not show task-level metrics for this
-# MAGIC > particular join type. The SQL tab and the code are your primary diagnostic tools here.
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### 🔎 Investigation space:
-
-# COMMAND ----------
-
-# MAGIC %sql
-# MAGIC -- Investigate here
-# MAGIC
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ---
-# MAGIC ## Challenge 4: Bad Notebook Parameters
+# MAGIC ## Challenge 3: Bad Notebook Parameters
 # MAGIC
 # MAGIC **Job**: Your `{JOB_PREFIX}_challenge_04_params`
 # MAGIC
@@ -232,6 +187,53 @@ spark.table(f"{FQ}.orders_v2").printSchema()
 
 # MAGIC %md
 # MAGIC ---
+# MAGIC ## Challenge 4: Runaway Job
+# MAGIC
+# MAGIC **Job**: Your `{JOB_PREFIX}_challenge_03_oom`
+# MAGIC
+# MAGIC **Scenario**: A reporting job runs on a **classic job cluster** and joins orders with customers
+# MAGIC to create a revenue breakdown. The job either **runs forever** or **crashes with OOM**.
+# MAGIC Something about the join is very wrong.
+# MAGIC
+# MAGIC > This job runs on **classic compute**, so in theory you have the **Spark UI**. But here's
+# MAGIC > the reality: sometimes the Spark UI won't tell you much — stages may show no tasks, the SQL
+# MAGIC > tab may not reveal the issue, and you're left staring at a job that's stuck. This is common
+# MAGIC > with certain join patterns on small clusters.
+# MAGIC >
+# MAGIC > **The best debugging tool here is the code itself.** Don't rely on job names or UI metrics alone.
+# MAGIC > Open the notebook, read what the join is actually doing, and think about the math.
+# MAGIC
+# MAGIC ### Your task:
+# MAGIC 1. Open the run — is it still running? Did it fail with OOM?
+# MAGIC 2. The Spark UI may not give you much here. Instead: **click through to the job notebook code**
+# MAGIC 3. Read the code — how are the two DataFrames being joined? What type of join is it?
+# MAGIC 4. Do the math: 500K orders × 50K customers = **25 billion rows**. That's why it runs forever / OOMs.
+# MAGIC 5. Fix the join: replace `crossJoin` with `.join(..., "customer_id")`, then re-run
+# MAGIC
+# MAGIC > 💡 **Tip**: Try using the **Genie Space** you built earlier — ask it
+# MAGIC > *"Which jobs are currently running for longer than 30 minutes?"* or check system tables
+# MAGIC > for the run status. Then open the code to understand *why*.
+# MAGIC
+# MAGIC ### Tools to use:
+# MAGIC - **The job notebook code** — this is your primary tool. Read the actual logic.
+# MAGIC - Job run output / error message (OOM if it crashes, or the job just hangs)
+# MAGIC - Genie / system tables to identify the stuck job
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### 🔎 Investigation space:
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC -- Investigate here
+# MAGIC
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ---
 # MAGIC ## 📋 Challenge Debrief
 # MAGIC
 # MAGIC After completing the challenges, discuss with your team:
@@ -240,8 +242,8 @@ spark.table(f"{FQ}.orders_v2").printSchema()
 # MAGIC |-----------|-------------|--------------------------------------|---------------------------|
 # MAGIC | 1 | Serverless | | |
 # MAGIC | 2 | Serverless (multi-task) | | |
-# MAGIC | 3 | Classic Compute | | |
-# MAGIC | 4 | Serverless | | |
+# MAGIC | 3 | Serverless | | |
+# MAGIC | 4 | Classic Compute | | |
 # MAGIC
 # MAGIC **Discussion questions:**
 # MAGIC - Which debugging surfaces were most useful for each challenge?

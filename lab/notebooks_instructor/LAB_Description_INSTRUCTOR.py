@@ -41,8 +41,8 @@
 # MAGIC |-----|-----|-----------|-----|
 # MAGIC | `puma_ops_challenge_01_schema` | Column renamed upstream | `total_amount` → `order_total` in `orders_v2` | Update column reference |
 # MAGIC | `puma_ops_challenge_02_permissions` | Missing SELECT on `curated` schema, then ambiguous column | Multi-task job: task 2 reads `curated.customer_segments` without SELECT → after GRANT, `AMBIGUOUS_REFERENCE` on `region` (both tables have it) | `GRANT SELECT ON SCHEMA puma_ops_lab.curated TO \`user\`` + **Repair Run**, then fix `region` → `df_staging["region"]` + **Repair Run** again |
-# MAGIC | `puma_ops_challenge_03_oom` | Cross-join instead of inner join | `crossJoin` causes cartesian product → runs forever with massive spill or OOM | Replace with `join(..., "key")` |
-# MAGIC | `puma_ops_challenge_04_params` | Typo in parameter | `"APEC"` instead of `"APAC"` → zero rows → assertion fails | Fix parameter value |
+# MAGIC | `puma_ops_challenge_04_params` (Challenge 3) | Typo in parameter | `"APEC"` instead of `"APAC"` → zero rows → assertion fails | Fix parameter value |
+# MAGIC | `puma_ops_challenge_03_oom` (Challenge 4) | Cross-join instead of inner join | `crossJoin` causes cartesian product → runs forever or OOM. Spark UI may not help on single-node — participants must read the code | Replace `crossJoin` with `join(..., "customer_id")` |
 # MAGIC | `puma_ops_challenge_05_slow_query` | Un-optimized table | Full scan on `gold_order_summary` (no OPTIMIZE, no clustering) | Run `OPTIMIZE` + add liquid clustering |
 # MAGIC
 # MAGIC ### SDP Pipeline Challenge

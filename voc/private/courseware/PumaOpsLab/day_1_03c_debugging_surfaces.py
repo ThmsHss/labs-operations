@@ -178,16 +178,19 @@ ORDER BY jrt.period_start_time DESC
 # MAGIC The **Spark UI** is available **only for Classic Compute**. You access it from the Cluster page
 # MAGIC (**Compute → your cluster → Spark UI** tab) or from a classic-compute task run detail.
 # MAGIC
-# MAGIC In the next notebook, **Challenge 3** has a code bug — a `crossJoin` that should be an `inner join` —
-# MAGIC causing a cartesian product. On a small cluster this either **runs forever** with massive disk spill
-# MAGIC or eventually **crashes with OOM**. Either way, the Spark UI tells the story.
+# MAGIC In the next notebook, **Challenge 4** has a code bug — a `crossJoin` that should be an `inner join` —
+# MAGIC causing a cartesian product. On a small cluster this either **runs forever** or **crashes with OOM**.
 # MAGIC
-# MAGIC **What to look for in the Spark UI:**
-# MAGIC - **SQL tab → Physical plan**: Look for `BroadcastNestedLoopJoin` (cartesian product) — this is the smoking gun.
-# MAGIC   A healthy equi-join shows `SortMergeJoin` or `BroadcastHashJoin` instead.
-# MAGIC - **SQL tab → Row counts**: The plan shows estimated vs actual row counts — a cartesian product explodes these.
-# MAGIC - **Stages tab → Spill (Disk)**: If the job gets far enough, you'll see memory pressure metrics.
-# MAGIC - **Executors tab → Failed tasks**: OOM on a specific executor (if the job crashes rather than hanging).
+# MAGIC Here's the catch: **the Spark UI won't always help.** On a single-node cluster with certain join
+# MAGIC patterns, stages show no tasks, and the SQL tab may not reveal much. This is realistic —
+# MAGIC sometimes the best debugging tool is **reading the actual code** and thinking about what the
+# MAGIC join is doing mathematically (500K × 50K = 25 billion rows).
+# MAGIC
+# MAGIC **General Spark UI patterns to know for production debugging:**
+# MAGIC - **SQL tab → Physical plan**: `BroadcastNestedLoopJoin` = cartesian product. Healthy joins show `SortMergeJoin` or `BroadcastHashJoin`.
+# MAGIC - **Stages tab → Spill (Disk)**: Memory pressure — the executor ran out of memory.
+# MAGIC - **Stages tab → Task duration skew**: One task takes much longer than others → data skew.
+# MAGIC - **Executors tab → Failed tasks**: OOM or spot preemption on a specific executor.
 # MAGIC
 # MAGIC > **Reference**: [Debugging with the Spark UI](https://docs.databricks.com/aws/en/compute/troubleshooting/debugging-spark-ui)
 
