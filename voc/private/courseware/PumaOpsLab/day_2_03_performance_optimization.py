@@ -860,7 +860,7 @@ print("Performance lab table cleaned up")
 # MAGIC ```
 # MAGIC
 # MAGIC ---
-# MAGIC **Next**: [day_2_04_sql_alerts — SQL Alerts Challenge]($./day_2_04_sql_alerts)
+# MAGIC **Next**: [day_2_04a_data_quality — Data Quality with SDP Expectations]($./day_2_04a_data_quality)
 
 # COMMAND ----------
 

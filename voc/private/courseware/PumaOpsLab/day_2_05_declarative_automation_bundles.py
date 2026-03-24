@@ -516,7 +516,7 @@
 # MAGIC - [Bundle examples on GitHub](https://github.com/databricks/bundle-examples)
 # MAGIC
 # MAGIC ---
-# MAGIC **Previous**: [day_2_04_sql_alerts — SQL Alerts Challenge]($./day_2_04_sql_alerts)
+# MAGIC **Previous**: [day_2_04b_sql_alerts — SQL Alerts Challenge]($./day_2_04b_sql_alerts)
 # MAGIC
 # MAGIC **End of Workshop.** 🎉 Thank you for attending the Databricks Operations Masterclass!
 

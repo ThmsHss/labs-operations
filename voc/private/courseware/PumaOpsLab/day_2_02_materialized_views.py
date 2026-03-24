@@ -45,9 +45,15 @@
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ### **-- Note: Please change the the materialised view name by adding a prefix**
+# MAGIC ### **Also please make sure you use PUMA_OPS_SHARED_WAREHOUSE** compute
+
+# COMMAND ----------
+
 # MAGIC %sql
 # MAGIC -- Create a materialized view for daily sales
-# MAGIC CREATE OR REPLACE MATERIALIZED VIEW puma_ops_lab.workshop.mv_daily_sales_summary AS
+# MAGIC CREATE OR REPLACE MATERIALIZED VIEW puma_ops_lab.workshop.<PLEASE_ADD_A_PREFIX_LIKE_YOUR_NAME>mv_daily_sales_summary AS
 # MAGIC SELECT
 # MAGIC     DATE(order_timestamp) AS order_date,
 # MAGIC     region,
@@ -69,7 +75,7 @@
 
 # MAGIC %sql
 # MAGIC -- Query the MV - reads pre-computed data (fast!)
-# MAGIC SELECT * FROM puma_ops_lab.workshop.mv_daily_sales_summary
+# MAGIC SELECT * FROM puma_ops_lab.workshop.<PLEASE_ADD_A_PREFIX_LIKE_YOUR_NAME>mv_daily_sales_summary
 # MAGIC WHERE order_date >= current_date() - 7
 # MAGIC ORDER BY order_date DESC, total_revenue DESC
 
@@ -82,22 +88,20 @@
 
 # MAGIC %sql
 # MAGIC -- Create a complex MV for product performance
-# MAGIC CREATE OR REPLACE MATERIALIZED VIEW puma_ops_lab.workshop.mv_product_performance AS
+# MAGIC CREATE OR REPLACE MATERIALIZED VIEW puma_ops_lab.workshop.<PLEASE_ADD_A_PREFIX_LIKE_YOUR_NAME>mv_product_performance AS
 # MAGIC SELECT
 # MAGIC     p.product_id,
 # MAGIC     p.product_name,
 # MAGIC     p.category,
-# MAGIC     p.brand,
+# MAGIC     p.color,
 # MAGIC     COUNT(DISTINCT o.order_id) AS order_count,
 # MAGIC     COUNT(DISTINCT o.customer_id) AS unique_buyers,
-# MAGIC     ROUND(SUM(o.order_total), 2) AS total_revenue,
-# MAGIC     ROUND(AVG(o.order_total), 2) AS avg_order_value,
 # MAGIC     MIN(o.order_timestamp) AS first_sale,
 # MAGIC     MAX(o.order_timestamp) AS last_sale,
 # MAGIC     CURRENT_TIMESTAMP() AS _last_refreshed
 # MAGIC FROM puma_ops_lab.workshop.products p
 # MAGIC LEFT JOIN puma_ops_lab.workshop.orders o ON p.product_id = o.product_id
-# MAGIC GROUP BY p.product_id, p.product_name, p.category, p.brand;
+# MAGIC GROUP BY p.product_id, p.product_name, p.category, p.color;
 
 # COMMAND ----------
 
@@ -106,11 +110,10 @@
 # MAGIC SELECT 
 # MAGIC     category,
 # MAGIC     COUNT(*) as product_count,
-# MAGIC     SUM(order_count) as total_orders,
-# MAGIC     ROUND(SUM(total_revenue), 2) as category_revenue
-# MAGIC FROM puma_ops_lab.workshop.mv_product_performance
+# MAGIC     SUM(order_count) as total_orders
+# MAGIC FROM puma_ops_lab.workshop.<PLEASE_ADD_A_PREFIX_LIKE_YOUR_NAME>mv_product_performance
 # MAGIC GROUP BY category
-# MAGIC ORDER BY category_revenue DESC
+# MAGIC ORDER BY total_orders DESC
 
 # COMMAND ----------
 
@@ -139,25 +142,25 @@
 # MAGIC %sql
 # MAGIC -- Check when MV was last refreshed
 # MAGIC SELECT MAX(_last_refreshed) AS last_refresh_time
-# MAGIC FROM puma_ops_lab.workshop.mv_daily_sales_summary
+# MAGIC FROM puma_ops_lab.workshop.<PLEASE_ADD_A_PREFIX_LIKE_YOUR_NAME>mv_daily_sales_summary
 
 # COMMAND ----------
 
 # MAGIC %sql
 # MAGIC -- Manually refresh the materialized view
-# MAGIC REFRESH MATERIALIZED VIEW puma_ops_lab.workshop.mv_daily_sales_summary
+# MAGIC REFRESH MATERIALIZED VIEW puma_ops_lab.workshop.<PLEASE_ADD_A_PREFIX_LIKE_YOUR_NAME>mv_daily_sales_summary
 
 # COMMAND ----------
 
 # MAGIC %sql
 # MAGIC -- Verify refresh time updated
 # MAGIC SELECT MAX(_last_refreshed) AS last_refresh_time
-# MAGIC FROM puma_ops_lab.workshop.mv_daily_sales_summary
+# MAGIC FROM puma_ops_lab.workshop.<PLEASE_ADD_A_PREFIX_LIKE_YOUR_NAME>mv_daily_sales_summary
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### Scheduled Refresh via Job
+# MAGIC ### Exercise: Scheduled Refresh via Job
 # MAGIC
 # MAGIC Create a job to refresh MVs on a schedule:
 # MAGIC
@@ -193,7 +196,7 @@
 # MAGIC         WHEN TIMESTAMPDIFF(HOUR, MAX(_last_refreshed), CURRENT_TIMESTAMP()) > 4 THEN '🟡 AGING'
 # MAGIC         ELSE '🟢 FRESH'
 # MAGIC     END AS status
-# MAGIC FROM puma_ops_lab.workshop.mv_daily_sales_summary
+# MAGIC FROM puma_ops_lab.workshop.<PLEASE_ADD_A_PREFIX_LIKE_YOUR_NAME>mv_daily_sales_summary
 # MAGIC
 # MAGIC UNION ALL
 # MAGIC
@@ -206,7 +209,7 @@
 # MAGIC         WHEN TIMESTAMPDIFF(HOUR, MAX(_last_refreshed), CURRENT_TIMESTAMP()) > 4 THEN '🟡 AGING'
 # MAGIC         ELSE '🟢 FRESH'
 # MAGIC     END AS status
-# MAGIC FROM puma_ops_lab.workshop.mv_product_performance
+# MAGIC FROM puma_ops_lab.workshop.<PLEASE_ADD_A_PREFIX_LIKE_YOUR_NAME>mv_product_performance
 
 # COMMAND ----------
 
@@ -223,13 +226,13 @@ print("📊 Performance Comparison\n")
 
 # Query standard view (computes aggregation)
 start = time.time()
-spark.sql("SELECT region, SUM(order_count) FROM puma_ops_lab.workshop.v_daily_sales_summary GROUP BY region").collect()
+spark.sql("SELECT region, SUM(order_count) FROM puma_ops_lab.workshop.<PLEASE_ADD_A_PREFIX_LIKE_YOUR_NAME>mv_daily_sales_summary GROUP BY region").collect()
 view_time = time.time() - start
 print(f"Standard View:      {view_time:.3f} seconds")
 
 # Query materialized view (reads cached data)
 start = time.time()
-spark.sql("SELECT region, SUM(order_count) FROM puma_ops_lab.workshop.mv_daily_sales_summary GROUP BY region").collect()
+spark.sql("SELECT region, SUM(order_count) FROM puma_ops_lab.workshop.<PLEASE_ADD_A_PREFIX_LIKE_YOUR_NAME>mv_daily_sales_summary GROUP BY region").collect()
 mv_time = time.time() - start
 print(f"Materialized View:  {mv_time:.3f} seconds")
 

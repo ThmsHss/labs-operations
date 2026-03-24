@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # 🚨 Day 2 — 04: SQL Alerts Challenge
+# MAGIC # 🚨 Day 2 — 04b: SQL Alerts Challenge
 # MAGIC **Databricks Operations Masterclass — PUMA**
 # MAGIC
 # MAGIC ⏱️ **Time**: ~10 minutes | 🎯 **Goal**: Design your own monitoring alert
@@ -107,4 +107,4 @@
 
 # COMMAND ----------
 
-mark_notebook_complete("day_2_04_sql_alerts")
+mark_notebook_complete("day_2_04b_sql_alerts")
